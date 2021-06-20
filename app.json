@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "CommunityBeta",
-    "slug": "CommunityBeta",
-    "owner": "betatesting",    
+    "name": "MyCommunityBeta",
+    "slug": "MyCommunityBeta",
+    "owner": "infosiva",    
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -19,10 +19,12 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.community",
+      "bundleIdentifier": "com.community.beta",
       "buildNumber": "1.0.0"
     },
     "android": {
+      "package": "com.community.beta",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
