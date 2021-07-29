@@ -29,7 +29,7 @@ const SplashScreen = ({navigation}) => {
             <Animatable.Image 
                 animation="bounceIn"
                 duraton="1500"
-            source={require('../assets/banners/whitehouse-fb-page.jpg')}
+            source={require('../assets/banners/wh-aerialview.jpg')}
             style={styles.logo}
             // resizeMode="stretch"
             />

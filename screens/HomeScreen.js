@@ -99,13 +99,13 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.categoryBtn}
               onPress={() =>
-                Linking.openURL(Redirect.MKPARISHCOUNCIL.link)
+                navigation.navigate('EventsCalendar')
               }
             >
               <View style={styles.categoryIcon}>
                 <MaterialCommunityIcons name="google-circles-communities" size={35} color="#FF6347" />
               </View>
-              <Text style={styles.categoryBtnTxt}>Community Page</Text>
+              <Text style={styles.categoryBtnTxt}>Community bookings & events</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.categoryBtn} onPress={() => {
               navigation.navigate('ContactsList', { title: 'Council Members' })
@@ -113,7 +113,7 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.categoryIcon}>
                 <FontAwesome5 name="hands-helping" size={35} color="#FF6347" />
               </View>
-              <Text style={styles.categoryBtnTxt}>WH Counsellors</Text>
+              <Text style={styles.categoryBtnTxt}>Community Counsellors</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -139,7 +139,7 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.cardTitle}>New Secondary due to open</Text>
               {/* <StarRating ratings={4} reviews={99} /> */}
               <Text style={styles.cardDetails}>
-                New secondary school that will be the biggest in Milton Keynes will open early next year
+                New secondary school will be open early next year
             </Text>
             </View>
           </View>
@@ -152,7 +152,7 @@ const HomeScreen = ({ navigation }) => {
               />
             </View>
             <View style={styles.cardInfo}>
-              <Text style={styles.cardTitle}>GP surgery opened in Whitehouse</Text>
+              <Text style={styles.cardTitle}>GP surgery opened</Text>
               {/* <StarRating ratings={4} reviews={99} /> */}
               <Text style={styles.cardDetails}>
                 A new state-of-the-art health centre has opened its doors in Milton Keynes.

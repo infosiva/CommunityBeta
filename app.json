@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "MyCommunityBeta",
-    "slug": "MyCommunityBeta",
+    "name": "WhitehouseCommunity",
+    "slug": "WhitehouseCommunity",
     "owner": "infosiva",    
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -19,11 +19,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.community.beta",
-      "buildNumber": "1.0.0"
+      "bundleIdentifier": "com.community.whitehouse",
+      "buildNumber": "1.1.0"
     },
     "android": {
-      "package": "com.community.beta",
+      "package": "com.community.whitehouse",
       "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
