@@ -1,4 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, Image, StyleSheet, View, Text, TouchableOpacity, Alert } from 'react-native';
+
+
+const { height, width } = Dimensions.get('window');
+
+
+const SLIDER_WIDTH = Dimensions.get('window').width;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
+const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
 
 export const colors = {
     black: '#1a1917',
@@ -22,15 +30,20 @@ export default StyleSheet.create({
     scrollview: {
         flex: 1
     },
-    exampleContainer: {
-        paddingVertical: 30
-    },
-    exampleContainerDark: {
-        backgroundColor: colors.black
-    },
-    exampleContainerLight: {
-        backgroundColor: 'white'
-    },
+    item: {
+        width: width - 60,
+        height: width - 60,
+      },
+      imageContainer: {
+        flex: 1,
+        marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
+        backgroundColor: 'white',
+        borderRadius: 8,
+      },
+      image: {
+        ...StyleSheet.absoluteFillObject,
+        resizeMode: 'cover',
+      },
     title: {
         paddingHorizontal: 30,
         backgroundColor: 'transparent',
@@ -52,19 +65,39 @@ export default StyleSheet.create({
         textAlign: 'center'
     },
     slider: {
-        marginTop: 15,
+        marginTop: 0,
         overflow: 'visible' // for custom animations
     },
     sliderContentContainer: {
-        paddingVertical: 10 // for custom animation
+        paddingVertical: 0 // for custom animation
     },
     paginationContainer: {
-        paddingVertical: 8
+        paddingVertical: 1
     },
     paginationDot: {
         width: 8,
         height: 8,
         borderRadius: 4,
         marginHorizontal: 8
-    }
+    },
+    carouselContainer: {
+        marginTop: 50
+      },
+      itemContainer: {
+        width: ITEM_WIDTH,
+        height: ITEM_HEIGHT,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'dodgerblue'
+      },
+      itemLabel: {
+        color: 'white',
+        fontSize: 24
+      },
+      counter: {
+        marginTop: 25,
+        fontSize: 30,
+        fontWeight: 'bold',
+        textAlign: 'center'
+      }
 });

@@ -13,7 +13,7 @@ import {
  }
  from 'react-native';
 
-const SettingsScreen = () => {
+const NotificationSettings = () => {
   const [switchValue, setSwitchValue] = useState();
   var bgColor = '#DCE3F4';
   return (
@@ -66,4 +66,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default SettingsScreen;
+export default NotificationSettings;

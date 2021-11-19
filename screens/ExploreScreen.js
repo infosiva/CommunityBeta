@@ -21,7 +21,8 @@ import { markers, mapDarkStyle, mapStandardStyle } from '../model/mapData';
 import StarRating from '../components/StarRating';
 
 import { useTheme } from '@react-navigation/native';
-import icons from '../model/icons'
+// import icons from '../model/icons'
+import useLocation from "../hooks/useLocation";
 
 const { width, height } = Dimensions.get("window");
 const CARD_HEIGHT = 220;
@@ -29,6 +30,7 @@ const CARD_WIDTH = width * 0.8;
 const SPACING_FOR_CARD_INSET = width * 0.1 - 10;
 
 const ExploreScreen = () => {
+  const location = useLocation();
   const theme = useTheme();
 
   const initialMapState = {
@@ -42,10 +44,10 @@ const ExploreScreen = () => {
         name: 'Surgery near by',
         icon: <MaterialCommunityIcons style={styles.chipsIcon} name="medical-bag" size={18} />,
       },      
-      {
-        name: 'Playarea',
-        icon: <Image source={icons.playarea} />,
-      },
+      // {
+      //   name: 'Playarea',
+      //   icon: <Image source={icons.playarea} />,
+      // },
       {
         name: 'Lakes',
         icon: <Ionicons name="md-restaurant" style={styles.chipsIcon} size={18} />,
