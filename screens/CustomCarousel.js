@@ -11,10 +11,10 @@ import Carousel, { Pagination } from "react-native-snap-carousel";
 import styles, { colors } from "./styles/index.style";
 import { sliderWidth, itemWidth } from "./styles/SliderEntry.style";
 import SliderEntry from "./../components/SliderEntry";
+import { storage } from './../firebase/config'
+import images from './../model/carousel'
 
 const { height, width } = Dimensions.get("window");
-
-import images from "./../model/carousel";
 
 const SLIDER_WIDTH = Dimensions.get("window").width;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
@@ -22,16 +22,39 @@ const ITEM_HEIGHT = Math.round((ITEM_WIDTH * 3) / 4);
 const SLIDER_1_FIRST_ITEM = 1;
 
 class CustomCarousel extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
       slider1ActiveSlide: SLIDER_1_FIRST_ITEM,
+      caroselImages: [],
       imageURI: null,
       body: null,
       imageTitle: null,
     };
     this.onPress = this.onPress.bind(this);
   }
+
+  getData = async () => {
+    try {
+      const carouselImages = []
+      const imageRefs = await storage.ref('carouselImages').listAll();
+      const images= await Promise.all(
+        imageRefs.items.map((ref) => ref.getDownloadURL())
+      );
+      images.forEach(image => {
+        const img = {
+          image: image
+        }
+        carouselImages.push(img)
+      })
+      console.log(JSON.stringify(carouselImages))
+      this.setState({ caroselImages: carouselImages })
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   _renderItemWithParallax({ item, index }, parallaxProps) {
     return (
       <SliderEntry
@@ -75,21 +98,22 @@ class CustomCarousel extends Component {
           );
         }}
       >
-        <Image source={item.image} style={style.logoStyle} />
-        {/* <Text style={{ fontSize: 30 }}>{item.title}</Text> */}
+        <Image style={styles.logo} source={{ uri: item.image}}/>
+        <Text style={{ fontSize: 30 }}>SIVA</Text>
       </TouchableOpacity>
     );
   };
 
   render() {
-    const { slider1ActiveSlide } = this.state;
-    return (
+    this.getData()
+    const { slider1ActiveSlide, caroselImages } = this.state;
+    return caroselImages ? (
       <View style={styles.exampleContainer}>
         {/* <Text style={styles.title}>{`Example`}</Text>
             <Text style={styles.subtitle}>test</Text> */}
         <Carousel
           autoplay={true}
-          data={images}
+          data={caroselImages}
           renderItem={this.renderItem}
           sliderWidth={sliderWidth}
           itemWidth={itemWidth}
@@ -133,7 +157,7 @@ class CustomCarousel extends Component {
           tappableDots={!!this._slider1Ref}
         />
       </View>
-    );
+    ) : 'No images';
   }
 }
 

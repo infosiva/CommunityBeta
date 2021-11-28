@@ -52,6 +52,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "description": ""
+    "description": "",
+    "plugins": [
+      "expo-image-picker"
+    ]
   }
 }

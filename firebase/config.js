@@ -1,4 +1,6 @@
 //https://console.firebase.google.com/u/0/project/communityapp-datastore/settings/cloudmessaging/ios:com.community.whitehouse - Server key referred as API Key
+import firebase from 'firebase';
+
 const firebaseConfig = {
   apiKey:
     "AAAAIMPDlhg:APA91bE1tZHcVIsXGj8t6Z2NBrTlSuI5l2uLN4EPQJvPP3_8_gRgDwd7npb9YIQppvbFyXpEeoCCUTVQGrHdKAVpt4kivRJHiHtQCVc21nUeyfqoZznNT-RS5RAf5QlNitptlnS6Zo71",
@@ -8,4 +10,10 @@ const firebaseConfig = {
   storageBucket: "communityapp-datastore.appspot.com",
 };
 
-export { firebaseConfig };
+let firebaseapp;
+if (!firebase.apps.length) {
+  firebaseapp = firebase.initializeApp(firebaseConfig);
+}
+const storage = firebase.storage();
+
+export { storage };

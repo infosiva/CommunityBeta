@@ -60,7 +60,7 @@ export default function App() {
   const responseListener = useRef();
 
   useEffect(() => {
-    console.log(JSON.stringify(firebaseConfig));
+    // console.log(JSON.stringify(firebaseConfig));
     if (!firebase.apps.length) {
     firebase.initializeApp({
       apiKey:

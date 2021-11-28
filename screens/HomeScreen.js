@@ -70,9 +70,9 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               <View style={styles.categoryIcon}>
-                <Ionicons name="trash-bin-sharp" size={35} color="#FF6347" />
+                <Ionicons name="image" size={35} color="#FF6347" />
               </View>
-              <Text style={styles.categoryBtnTxt}>Bin Collection</Text>
+              <Text style={styles.categoryBtnTxt}>Upload</Text>
             </TouchableOpacity>
           </View>
           {/* <View style={{
