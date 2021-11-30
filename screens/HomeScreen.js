@@ -18,6 +18,7 @@ import Images from "../model/images";
 import CustomCarousel from "./CustomCarousel";
 import Redirect from "../model/links";
 import { LinearGradient } from "expo-linear-gradient";
+import CountDownTimer from "./Countdown";
 
 const HomeScreen = ({ navigation }) => {
   const [showmore, setShowmore] = useState(false);
@@ -32,6 +33,9 @@ const HomeScreen = ({ navigation }) => {
       >
         {/* <ImageBackground source={require('./../assets/images/community-background.png')} style={{ width: null }}> */}
         <StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
+        <View>
+          <CountDownTimer />
+        </View>
         <View style={styles.sliderContainer}>
           <CustomCarousel />
         </View>
@@ -66,7 +70,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.categoryBtn}
               onPress={() => {
-                navigation.navigate("FileUpload", { title: "Upload File" })
+                navigation.navigate("FileUpload", { title: "Upload File" });
               }}
             >
               <View style={styles.categoryIcon}>
@@ -100,14 +104,9 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.categoryBtn}
               onPress={() => navigation.navigate("SendNotifications")}
-
             >
               <View style={styles.categoryIcon}>
-                <MaterialCommunityIcons
-                  name="bell"
-                  size={35}
-                  color="#FF6347"
-                />
+                <MaterialCommunityIcons name="bell" size={35} color="#FF6347" />
               </View>
               <Text style={styles.categoryBtnTxt}>Notify</Text>
             </TouchableOpacity>
