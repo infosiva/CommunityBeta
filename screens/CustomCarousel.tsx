@@ -77,7 +77,7 @@ const CustomCarousel = () => {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center" }}>
+    <View style={{ flex: 1, alignItems: "center", paddingBottom: 10 }}>
       <View style={{ margin: 10 }}>
         <Carousel
           autoplay={true}
@@ -97,14 +97,6 @@ const CustomCarousel = () => {
             />
           )}
         />
-        {/* <Pagination
-          inactiveDotColor="gray"
-          dotColor={"orange"}
-          activeDotIndex={indexSelected}
-          dotsLength={images?.length - 1}
-          animatedDuration={150}
-          inactiveDotScale={1}
-        /> */}
       </View>
       <View
         style={{
@@ -112,11 +104,7 @@ const CustomCarousel = () => {
           paddingHorizontal: 32,
           alignSelf: "flex-end",
         }}
-      >
-        <Text style={{ color: "white", fontSize: 22 }}>
-          {indexSelected + 1}/{images.length}
-        </Text>
-      </View>
+      ></View>
     </View>
   );
 };

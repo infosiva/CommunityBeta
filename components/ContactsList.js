@@ -7,15 +7,16 @@ import {
   ActivityIndicator,
   SafeAreaView,
   TextInput,
-  Image
+  Image,
 } from "react-native";
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import React, { Component } from "react";
-import dataGenerator from "./../model/DataGenerator";
 import ListElement from "./ListElement";
-import { LinearGradient } from 'expo-linear-gradient'
-
+import { LinearGradient } from "expo-linear-gradient";
+import "@firebase/firestore";
+import firebase from "firebase";
+import moment from "moment";
 
 export default class ContactsList extends Component {
   constructor(props) {
@@ -23,68 +24,63 @@ export default class ContactsList extends Component {
     this.state = {
       page: 1,
       users: [],
-      isLoading: false
+      isLoading: false,
     };
   }
+
   componentDidMount() {
-    this.addData();
+    // Runs after the first render() lifecycle
+    this.loadItems();
   }
+
+  loadItems() {
+    console.log("sss");
+    this.getItems().then((item) => this.setState({ users: item }));
+  }
+
+  getItems = async () => {
+    let eventsList = [];
+    const ref = firebase.firestore().collection("counsellors");
+
+    return ref.get().then(async (snap) => {
+      return (
+        snap.docs
+          // ?.sort((a, b) => (a?.date > b?.date ? 1 : -1))
+          .map((doc) => {
+            let docData = doc.data();
+            return { ...docData };
+          })
+      );
+    });
+  };
 
   renderItem = ({ item }) => (
     <View style={styles.container}>
-      <View style={{...styles.item}, {paddingLeft: 30}}>
+      <View style={({ ...styles.item }, { padding: 10 })}>
         <Image
-          style={{ width: 100, height: 100 }}
-          source={require('../assets/images/profile.png')}
+          style={{ width: 50, height: 50 }}
+          source={require("../assets/images/profile.png")}
         />
       </View>
-      <View style={{...styles.item} ,{paddingLeft: 30, paddingBottom: 50,  alignSelf: "center" }}>
-
-        <Text style={{ color: '#bada55', fontWeight: 'bold', fontSize: 20 }}>
-          {item.name + ' '}
-        </Text>
-        <Text style={{ color: '#bada55', fontWeight: 'bold', fontSize: 12,}}>
-          {item.designation + ' '}  
-        </Text>
-        <Text style={{ color: 'white', fontWeight: 'bold'}}>
-          <FontAwesome5 name="phone-volume" size={20} color="#FF6347" /> {item.phone}
-        </Text>
-        <Text style={{ color: 'white', fontWeight: 'bold'}}>
-          <MaterialCommunityIcons name="email-send" size={20} color="#FF6347" /> {item.email}
-        </Text>
+      <View
+        style={
+          ({ ...styles.item },
+          { paddingLeft: 20, paddingBottom: 20, paddingTop: 5, alignSelf: "center", width: '100%' })
+        }
+      >
+        {Object.keys(item).map((key) => (
+          <View style={{width: '100%', display: 'flex', flexDirection: 'row', padding: 10}}>
+            <Text style={{width: '35%', fontWeight: '500', fontStyle:'italic'}}>{key}</Text>
+            <Text>{item[key]}</Text>
+          </View>
+        ))}
       </View>
-
     </View>
   );
 
-  addData = () => {
-    this.setState(
-      {
-        isLoading: true
-      },
-      () => {
-        setTimeout(() => {
-          let newUsers = dataGenerator(this.state.page);
-          if (newUsers && newUsers.length > 0) {
-            this.setState({
-              users: [...this.state.users, ...newUsers],
-              isLoading: false
-            });
-          } else {
-            this.setState({
-              isLoading: false
-            });
-          }
-        }, 100);
-      }
-    );
-  };
-
-  searchContacts = value => {
-    const filteredContacts = this.state.users.filter(contact => {
-      let contactLowercase = (
-        contact.name
-      ).toLowerCase();
+  searchContacts = (value) => {
+    const filteredContacts = this.state.users.filter((contact) => {
+      let contactLowercase = contact.name.toLowerCase();
 
       let searchTermLowercase = value.toLowerCase();
 
@@ -94,32 +90,25 @@ export default class ContactsList extends Component {
   };
 
   onEndReached = () => {
-    this.setState(
-      {
-        page: this.state.page + 1
-      },
-      () => {
-        this.addData();
-      }
-    );
+    this.loadItems();
   };
   render() {
     return (
       <LinearGradient
-        colors={['#648880', '#207cca', '#7db9e8']}
+        colors={["#648880", "#207cca", "#7db9e8"]}
         style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
         <View style={{ flex: 1, paddingTop: 20 }}>
-          <SafeAreaView style={{ backgroundColor: '#2f363c' }} />
-          <View style={{ flex: 1, backgroundColor: '' }}>
+          <SafeAreaView style={{ backgroundColor: "#2f363c" }} />
+          <View style={{ flex: 1, backgroundColor: "" }}>
             {this.state.isLoading ? (
               <View
                 style={{
                   ...StyleSheet.absoluteFill,
-                  alignItems: 'center',
-                  justifyContent: 'center'
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
               >
                 <ActivityIndicator size="large" color="#bad555" />
@@ -133,12 +122,12 @@ export default class ContactsList extends Component {
                 <View
                   style={{
                     flex: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 50
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginTop: 50,
                   }}
                 >
-                  <Text style={{ color: '#bad555' }}>No Contacts Found</Text>
+                  <Text style={{ color: "#bad555" }}>No Contacts Found</Text>
                 </View>
               )}
             />
@@ -153,16 +142,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    //  alignSelf: "flex-start",
-    flexWrap: 'wrap',
-    //    paddingBottom: '10'
+    // flexWrap: "wrap",
+    // alignItems: "flex-start", // if you want to fill rows left to right
+  },
+  item: {
+    // width: "100%", // is 50% of container width
   },
   list: {
     width: "50%",
     alignSelf: "center",
-    paddingBottom: '100'
+    // paddingBottom: "100",
   },
   activity: {
-    alignSelf: "center"
-  }
+    alignSelf: "center",
+  },
 });

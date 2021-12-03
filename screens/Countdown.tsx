@@ -21,34 +21,39 @@ const CountDownTimer = () => {
   useEffect(() => {
     ref.get().then(async (snap) => {
       let settings: any = [];
-      snap.docs?.sort((a: any, b: any) => (a?.order > b?.order) ? 1 : -1 )
-      .map((doc) => {
-        let docData = doc.data();
-        let secondsDiff = moment(moment.unix(docData?.date?.seconds)).diff(
-          moment(new Date()),
-          "seconds"
-        );
-        let temp = {
-          durationUntil: secondsDiff,
-          title: docData?.title,
-          color: docData?.color,
-          timerLabelColor: docData?.timerLabelColor,
-          titleColor: docData?.titleColor,
-          timerBoxColor: docData?.timerBoxColor,
-          date: moment(moment.unix(docData?.date?.seconds)).format("ddd Do MMM YYYY h:mm a"),
-        };
-        settings.push(temp);
-      });
+      snap.docs
+        ?.sort((a: any, b: any) => (a?.order > b?.order ? 1 : -1))
+        .map((doc) => {
+          let docData = doc.data();
+          let secondsDiff = moment(moment.unix(docData?.date?.seconds)).diff(
+            moment(new Date()),
+            "seconds"
+          );
+          let temp = {
+            durationUntil: secondsDiff,
+            title: docData?.title,
+            color: docData?.color,
+            timerLabelColor: docData?.timerLabelColor,
+            titleColor: docData?.titleColor,
+            timerBoxColor: docData?.timerBoxColor,
+            date: moment(moment.unix(docData?.date?.seconds)).format("lll"),
+          };
+          if (moment().isBefore(moment.unix(docData?.date?.seconds))) {
+            settings.push(temp);
+          }
+        });
       setSettings(settings);
     });
   }, [setSettings]);
 
   return settings?.length ? (
     <>
-      {settings?.map((setting) => (
+      {settings?.map((setting: any) => (
         <View style={styles.container}>
+          <Text style={{ ...styles.title, color: setting.titleColor }}>
+            {setting.title}
+          </Text>
           <View style={styles.item}>
-            <Text style={{...styles.title, color: setting.titleColor}}>{setting.title}</Text>
             <Text style={styles.date}>{setting.date}</Text>
             <CountDown
               size={20}
@@ -59,9 +64,12 @@ const CountDownTimer = () => {
                 borderWidth: 2,
                 borderColor: setting.timerBoxColor || "#1CC625",
               }}
-              timeLabelStyle={{ color: setting.timerLabelColor || "lightblue", fontWeight: "bold" }}
+              timeLabelStyle={{
+                color: setting.timerLabelColor || "lightblue",
+                fontWeight: "bold",
+              }}
               // separatorStyle={{color: '#1CC625'}}
-              // timeToShow={["H", "M", "S"]}
+              timeToShow={["D", "H", "M"]}
               // timeLabels={{ m: null, s: null }}
               showSeparator
             />
@@ -77,12 +85,12 @@ export default CountDownTimer;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // flexDirection: "row",
+    flexDirection: "column",
     // flexWrap: "wrap",
     alignItems: "center",
   },
   item: {
-    width: "50%",
+    // width: "50%",
   },
   date: {
     textAlign: "center",
@@ -90,7 +98,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   title: {
-    textAlign: "center",
+    // textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
     padding: 10,

@@ -1,29 +1,16 @@
-import _ from "lodash";
-import React, { Component } from "react";
-import {
-  Platform,
-  Alert,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Button,
-} from "react-native";
-import {
-  ExpandableCalendar,
-  AgendaList,
-  CalendarProvider,
-  WeekCalendar,
-} from "react-native-calendars";
+import _ from 'lodash';
+import React, {Component} from 'react';
+import {Platform, Alert, StyleSheet, View, Text, TouchableOpacity, Button} from 'react-native';
+import {ExpandableCalendar, AgendaList, CalendarProvider, WeekCalendar} from 'react-native-calendars';
 
-const testIDs = require("./testIDs");
+const testIDs = require('./testIDs');
 
-const today = new Date().toISOString().split("T")[0];
+const today = new Date().toISOString().split('T')[0];
 //const fastDate = getPastDate(3);
 const futureDates = getFutureDates(9);
-const dates = futureDates;
-const themeColor = "#00AAAF";
-const lightThemeColor = "#EBF9F9";
+const dates = futureDates ;
+const themeColor = '#00AAAF';
+const lightThemeColor = '#EBF9F9';
 import "@firebase/firestore";
 import firebase from "firebase";
 import moment from "moment";
@@ -32,38 +19,51 @@ function getFutureDates(days) {
   const array = [];
   for (let index = 1; index <= days; index++) {
     const date = new Date(Date.now() + 864e5 * index); // 864e5 == 86400000 == 24*60*60*1000
-    const dateString = date.toISOString().split("T")[0];
+    const dateString = date.toISOString().split('T')[0];
     array.push(dateString);
   }
   return array;
 }
 
 function getPastDate(days) {
-  return new Date(Date.now() - 864e5 * days).toISOString().split("T")[0];
+  return new Date(Date.now() - 864e5 * days).toISOString().split('T')[0];
 }
 
 const ITEMS = [
+  {title: dates[5], data: [{hour: '12am', duration: '2h', title: 'Litter Picking'}]},
   {
-    title: dates[5],
-    data: [{ hour: "12am", duration: "2h", title: "Litter Picking" }],
+    title: dates[6],
+    data: [
+      {hour: '11pm', duration: '3h', title: 'Community Meeting'}
+    ]
   },
   {
     title: dates[6],
-    data: [{ hour: "11pm", duration: "3h", title: "Community Meeting" }],
-  },
-  {
-    title: dates[6],
-    data: [{ hour: "4pm", duration: "2h", title: "Nursery Kids Meetup" }],
-  },
+    data: [ 
+      {hour: '4pm', duration: '2h', title: 'Nursery Kids Meetup'}
+    ]
+  }
 ];
 
-function loadItems() {
-  console.log("sss");
-  //return this.getItems().then((item) => item);
-  return ITEMS
-}
-
 export default class ExpandableCalendarScreen extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      eventItems: []
+    };
+  }
+
+  componentDidMount() {
+    // Runs after the first render() lifecycle
+    this.loadItems()
+  }
+
+loadItems() {
+    console.log("sss");
+    this.getItems().then((item) => this.setState({eventItems: item}));
+    return ITEMS
+  }
 
   getItems = async () => {
     let eventsList = [];
@@ -74,29 +74,27 @@ export default class ExpandableCalendarScreen extends Component {
         ?.sort((a, b) => (a?.date > b?.date ? 1 : -1))
         .map((doc) => {
           let docData = doc.data();
-          let minutesDiff = moment(moment.unix(docData?.date?.seconds)).diff(
-            moment(moment.unix(docData?.duration?.seconds)),
+          let minutesDiff = moment(moment.unix(docData?.duration?.seconds)).diff(
+            moment(moment.unix(docData?.date?.seconds)),
             "minutes"
           );
           console.log("inside...");
           const details = {
             hour: "11 am",
-            duration: minutesDiff,
+            startAt: moment(moment.unix(docData?.date?.seconds)).format('hh.mm'),
+            endAt: moment(moment.unix(docData?.duration?.seconds)).format('hh.mm'),
             title: docData?.title,
             date: moment(moment.unix(docData?.date?.seconds)).format(
               "ddd Do MMM YYYY h:mm a"
             ),
           };
           return {
-            title: moment(moment.unix(docData?.date?.seconds)).format(
-              "ddd do MMM YYYY"
-            ),
+            title: moment(moment.unix(docData?.date?.seconds)).toDate(),
             data: [details],
           };
         });
     });
   };
-
 
   onDateChanged = (/* date, updateSource */) => {
     // console.warn('ExpandableCalendarScreen onDateChanged: ', date, updateSource);
@@ -108,7 +106,7 @@ export default class ExpandableCalendarScreen extends Component {
   };
 
   buttonPressed() {
-    Alert.alert("show more");
+    Alert.alert('show more');
   }
 
   itemPressed(id) {
@@ -123,76 +121,70 @@ export default class ExpandableCalendarScreen extends Component {
     );
   }
 
-  renderItem = ({ item }) => {
-    console.log(_.isEmpty(item) ? 'empty' : 'not empty')
+  renderItem = ({item}) => {
     if (_.isEmpty(item)) {
       return this.renderEmptyItem();
     }
 
     return (
-      <TouchableOpacity
-        onPress={() => this.itemPressed(item.title)}
-        style={styles.item}
-        testID={testIDs.agenda.ITEM}
-      >
+      <TouchableOpacity  style={styles.item} testID={testIDs.agenda.ITEM}>
         <View>
-          <Text style={styles.itemHourText}>{item.hour}</Text>
-          <Text style={styles.itemDurationText}>{item.duration}</Text>
+          <Text style={styles.itemHourText}>{item.startAt} - {item.endAt}</Text>
         </View>
         <Text style={styles.itemTitleText}>{item.title}</Text>
-        <View style={styles.itemButtonContainer}>
-          <Button color={"grey"} title={"Info"} onPress={this.buttonPressed} />
-        </View>
+          {/* <View style={styles.itemButtonContainer}>
+            <Button color={'grey'} title={'Info'} onPress={this.buttonPressed} />
+          </View> */}
       </TouchableOpacity>
     );
   };
 
   getMarkedDates = () => {
     const marked = {};
-    ITEMS.forEach((item) => {
+    ITEMS.forEach(item => {
       // NOTE: only mark dates with data
       if (item.data && item.data.length > 0 && !_.isEmpty(item.data[0])) {
-        marked[item.title] = { marked: true };
+        marked[item.title] = {marked: true};
       } else {
-        marked[item.title] = { disabled: true };
+        marked[item.title] = {disabled: true};
       }
     });
     return marked;
   };
 
   getTheme = () => {
-    const disabledColor = "grey";
+    const disabledColor = 'grey';
 
     return {
       // arrows
-      arrowColor: "black",
-      arrowStyle: { padding: 0 },
+      arrowColor: 'black',
+      arrowStyle: {padding: 0},
       // month
-      monthTextColor: "black",
+      monthTextColor: 'black',
       textMonthFontSize: 16,
-      textMonthFontFamily: "HelveticaNeue",
-      textMonthFontWeight: "bold",
+      textMonthFontFamily: 'HelveticaNeue',
+      textMonthFontWeight: 'bold',
       // day names
-      textSectionTitleColor: "black",
+      textSectionTitleColor: 'black',
       textDayHeaderFontSize: 12,
-      textDayHeaderFontFamily: "HelveticaNeue",
-      textDayHeaderFontWeight: "normal",
+      textDayHeaderFontFamily: 'HelveticaNeue',
+      textDayHeaderFontWeight: 'normal',
       // dates
       dayTextColor: themeColor,
       textDayFontSize: 18,
-      textDayFontFamily: "HelveticaNeue",
-      textDayFontWeight: "500",
-      textDayStyle: { marginTop: Platform.OS === "android" ? 2 : 4 },
+      textDayFontFamily: 'HelveticaNeue',
+      textDayFontWeight: '500',
+      textDayStyle: {marginTop: Platform.OS === 'android' ? 2 : 4},
       // selected date
       selectedDayBackgroundColor: themeColor,
-      selectedDayTextColor: "white",
+      selectedDayTextColor: 'white',
       // disabled date
       textDisabledColor: disabledColor,
       // dot (marked date)
       dotColor: themeColor,
-      selectedDotColor: "white",
+      selectedDotColor: 'white',
       disabledDotColor: disabledColor,
-      dotStyle: { marginTop: -2 },
+      dotStyle: {marginTop: -2}
     };
   };
 
@@ -210,11 +202,7 @@ export default class ExpandableCalendarScreen extends Component {
         // todayBottomMargin={16}
       >
         {this.props.weekView ? (
-          <WeekCalendar
-            testID={testIDs.weekCalendar.CONTAINER}
-            firstDay={1}
-            markedDates={this.getMarkedDates()}
-          />
+          <WeekCalendar testID={testIDs.weekCalendar.CONTAINER} firstDay={1} markedDates={this.getMarkedDates()} />
         ) : (
           <ExpandableCalendar
             testID={testIDs.expandableCalendar.CONTAINER}
@@ -230,12 +218,12 @@ export default class ExpandableCalendarScreen extends Component {
             disableAllTouchEventsForDisabledDays
             firstDay={1}
             markedDates={this.getMarkedDates()} // {'2019-06-01': {marked: true}, '2019-06-02': {marked: true}, '2019-06-03': {marked: true}};
-            leftArrowImageSource={require("./img/previous.png")}
-            rightArrowImageSource={require("./img/next.png")}
+            leftArrowImageSource={require('./img/previous.png')}
+            rightArrowImageSource={require('./img/next.png')}
           />
         )}
         <AgendaList
-          section={ITEMS}
+          sections={this.state.eventItems}
           extraData={this.state}
           renderItem={this.renderItem}
           // sectionStyle={styles.section}
@@ -248,48 +236,48 @@ export default class ExpandableCalendarScreen extends Component {
 const styles = StyleSheet.create({
   calendar: {
     paddingLeft: 20,
-    paddingRight: 20,
+    paddingRight: 20
   },
   section: {
     backgroundColor: lightThemeColor,
-    color: "grey",
-    textTransform: "capitalize",
+    color: 'grey',
+    textTransform: 'capitalize'
   },
   item: {
     padding: 20,
-    backgroundColor: "white",
+    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: "lightgrey",
-    flexDirection: "row",
+    borderBottomColor: 'lightgrey',
+    flexDirection: 'row'
   },
   itemHourText: {
-    color: "black",
+    color: 'black'
   },
   itemDurationText: {
-    color: "grey",
+    color: 'grey',
     fontSize: 12,
     marginTop: 4,
-    marginLeft: 4,
+    marginLeft: 4
   },
   itemTitleText: {
-    color: "black",
-    marginLeft: 16,
-    fontWeight: "bold",
-    fontSize: 16,
+    color: 'black',
+    marginLeft: 8,
+    fontWeight: 'bold',
+    fontSize: 16
   },
-  itemButtonContainer: {
+  container: {
     flex: 1,
-    alignItems: "flex-end",
+    // alignItems: 'flex-end'
   },
   emptyItem: {
     paddingLeft: 20,
     height: 52,
-    justifyContent: "center",
+    justifyContent: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: "lightgrey",
+    borderBottomColor: 'lightgrey'
   },
   emptyItemText: {
-    color: "lightgrey",
-    fontSize: 14,
-  },
+    color: 'lightgrey',
+    fontSize: 14
+  }
 });

@@ -33,11 +33,11 @@ const HomeScreen = ({ navigation }) => {
       >
         {/* <ImageBackground source={require('./../assets/images/community-background.png')} style={{ width: null }}> */}
         <StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
-        <View>
-          <CountDownTimer />
-        </View>
         <View style={styles.sliderContainer}>
           <CustomCarousel />
+        </View>
+        <View>
+          <CountDownTimer />
         </View>
         <View style={styles.categoryContainer2}>
           {/* <View style={{
@@ -121,13 +121,13 @@ const HomeScreen = ({ navigation }) => {
                   color="#FF6347"
                 />
               </View>
-              <Text style={styles.categoryBtnTxt}>Community Centre</Text>
+              <Text style={styles.categoryBtnTxt}>Community Booking</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.categoryBtn}
               onPress={() => {
                 navigation.navigate("ContactsList", {
-                  title: "Council Members",
+                  title: "Counsellors",
                 });
               }}
             >
