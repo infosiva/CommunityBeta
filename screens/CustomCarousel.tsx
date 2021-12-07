@@ -1,9 +1,25 @@
 import React, { useState, useCallback, useRef, useEffect } from "react";
-import { Text, View, SafeAreaView, Image, Dimensions } from "react-native";
+import {
+  Text,
+  View,
+  SafeAreaView,
+  Image,
+  Dimensions,
+  StyleSheet,
+  Platform,
+  TouchableOpacity,
+} from "react-native";
 
-import Carousel, { Pagination } from "react-native-snap-carousel";
+import Carousel, {
+  ParallaxImage,
+  Pagination,
+} from "react-native-snap-carousel";
 import images from "./../model/carousel";
 import { storage } from "./../firebase/config";
+import { LinearGradient } from "expo-linear-gradient";
+import ImageViewing from "react-native-image-viewing";
+
+const { width: screenWidth } = Dimensions.get("window");
 
 const CustomCarousel = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -17,6 +33,25 @@ const CustomCarousel = () => {
   const flatListRef = useRef<any>();
 
   const ref = useRef(null);
+
+  const renderItem = (item, index, parallaxProps) => {
+    return (
+      <TouchableOpacity onPress={onPressCarousel(index)} style={styles.tile}>
+        <View style={styles.item}>
+          <ParallaxImage
+            source={{ uri: item.imageUrl }}
+            containerStyle={styles.imageContainer}
+            style={styles.image}
+            parallaxFactor={0.4}
+            {...parallaxProps}
+          />
+          <Text style={styles.title} numberOfLines={2}>
+            {item?.title}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   useEffect(() => {
     const fetchImages = async () => {
@@ -34,6 +69,7 @@ const CustomCarousel = () => {
       urls.forEach((url) => {
         let image: any = {};
         image.imageUrl = url;
+        image.title = "image...";
         imagesList.push(image);
       });
       console.log(JSON.stringify(imagesList));
@@ -45,29 +81,14 @@ const CustomCarousel = () => {
   const onSelect = (indexSelected: number) => {
     setIndexSelected(indexSelected);
 
-    /**
-     * if you want to position the thumbnail in * the middle of the screen on selection
-     * do the following
-     * Calculation done by awesome Catalin Miron
-     * Source: https://www.youtube.com/watch?v=gjC2oUJhePE&t=1097s
-     */
-    // if (indexSelected * (THUMB_SIZE + 10) - THUMB_SIZE / 2 > width / 2) {
-    //   flatListRef?.current?.scrollToOffset({
-    //     offset: indexSelected * (THUMB_SIZE + 10) - width / 2 + THUMB_SIZE / 2,
-    //     animated: true,
-    //   });
-    // } else {
-    //   flatListRef?.current?.scrollToOffset({
-    //     offset: 0,
-    //     animated: true,
-    //   });
-    // }
-
-    //  my initial solution
     flatListRef?.current?.scrollToOffset({
       offset: indexSelected * THUMB_SIZE,
       animated: true,
     });
+  };
+
+  const onPressCarousel = (indexSelected: number) => {
+    setIndexSelected(indexSelected);
   };
 
   const onTouchThumbnail = (touched: any) => {
@@ -77,36 +98,87 @@ const CustomCarousel = () => {
   };
 
   return (
-    <View style={{ flex: 1, alignItems: "center", paddingBottom: 10 }}>
-      <View style={{ margin: 10 }}>
-        <Carousel
-          autoplay={true}
-          loop={true}
-          ref={carouselRef}
-          layout="tinder"
-          data={carouselImages || []}
-          sliderWidth={width}
-          itemWidth={width}
-          onSnapToItem={(index) => onSelect(index)}
-          renderItem={({ item, index }) => (
-            <Image
-              key={index}
-              style={{ width: "100%", height: "100%" }}
-              resizeMode="contain"
-              source={{ uri: item?.imageUrl }}
+    <View style={{ flex: 1, alignItems: "center" }}>
+      <View style={styles.container}>
+        <LinearGradient
+          colors={["#648880", "#207cca", "#7db9e8"]}
+          // style={styles.container}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <Carousel
+            layout="default"
+            autoplay={true}
+            loop={true}
+            sliderWidth={screenWidth}
+            sliderHeight={screenWidth}
+            itemWidth={screenWidth - 60}
+            data={carouselImages || []}
+            onPress={() => alert("")}
+            onSnapToItem={(index) => onSelect(index)}
+            renderItem={(
+              item: {
+                item: unknown;
+                index: number;
+              },
+              parallaxProps
+            ) => renderItem(item.item, item.index, parallaxProps)}
+            hasParallaxImages={true}
+          />
+          {/* {indexSelected > 0 && (
+            <ImageViewing
+              images={carouselImages}
+              imageIndex={indexSelected}
+              presentationStyle="overFullScreen"
+              visible={indexSelected ? true : false}
+              // onRequestClose={onRequestClose}
+              // onLongPress={onLongPress}
+              // HeaderComponent={
+              //   images === travel
+              //     ? ({ imageIndex }) => {
+              //         const title = get(images, `${imageIndex}.title`);
+              //         return (
+              //           <ImageHeader
+              //             title={title}
+              //             onRequestClose={onRequestClose}
+              //           />
+              //         );
+              //       }
+              //     : undefined
+              // }
+              // FooterComponent={({ imageIndex }) => (
+              //   <ImageFooter
+              //     imageIndex={imageIndex}
+              //     imagesCount={images.length}
+              //   />
+              // )}
             />
-          )}
-        />
+          )} */}
+        </LinearGradient>
       </View>
-      <View
-        style={{
-          marginTop: 20,
-          paddingHorizontal: 32,
-          alignSelf: "flex-end",
-        }}
-      ></View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  item: {
+    margin: 10,
+    marginBottom: 0,
+    width: screenWidth - 50,
+    height: screenWidth - 50,
+  },
+  imageContainer: {
+    flex: 1,
+    marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
+    borderRadius: 8,
+  },
+  image: {
+    ...StyleSheet.absoluteFillObject,
+    resizeMode: "contain",
+  },
+});
 
 export default CustomCarousel;

@@ -19,26 +19,34 @@ import CustomCarousel from "./CustomCarousel";
 import Redirect from "../model/links";
 import { LinearGradient } from "expo-linear-gradient";
 import CountDownTimer from "./Countdown";
+import RecentNews from "./RecentNews";
 
 const HomeScreen = ({ navigation }) => {
   const [showmore, setShowmore] = useState(false);
   const theme = useTheme();
   return (
     <ScrollView style={styles.MainContainer}>
+      {/* <ImageBackground source={require('./../assets/images/community-background.png')} style={{ width: null }}> */}
+      <StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
+      <View style={styles.sliderContainer}>
+        <CustomCarousel />
+      </View>
+      <View>
+        <LinearGradient
+          colors={["green", "#207cca", "#7db9e8"]}
+          style={styles.container}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <CountDownTimer />
+        </LinearGradient>
+      </View>
       <LinearGradient
         colors={["#648880", "#207cca", "#7db9e8"]}
         style={styles.container}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
       >
-        {/* <ImageBackground source={require('./../assets/images/community-background.png')} style={{ width: null }}> */}
-        <StatusBar barStyle={theme.dark ? "light-content" : "dark-content"} />
-        <View style={styles.sliderContainer}>
-          <CustomCarousel />
-        </View>
-        <View>
-          <CountDownTimer />
-        </View>
         <View style={styles.categoryContainer2}>
           {/* <View style={{
             alignItems: 'center',
@@ -49,7 +57,11 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.categoryContainer}>
             <TouchableOpacity
               style={styles.categoryBtn}
-              onPress={() => navigation.navigate("EventsCalendar")}
+              onPress={() =>
+                navigation.navigate("EventsCalendar", {
+                  title: "Upcoming Events",
+                })
+              }
             >
               <View style={styles.categoryIcon}>
                 <MaterialIcons name="event" size={35} color="#FF6347" />
@@ -65,18 +77,21 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.categoryIcon}>
                 <Ionicons name="people" size={35} color="#FF6347" />
               </View>
-              <Text style={styles.categoryBtnTxt}>Recent News</Text>
+              <Text style={styles.categoryBtnTxt}>Latest News</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={styles.categoryBtn}
               onPress={() => {
-                navigation.navigate("FileUpload", { title: "Upload File" });
+                navigation.navigate("ContactsList", {
+                  title: "Counsellors",
+                });
               }}
             >
               <View style={styles.categoryIcon}>
-                <Ionicons name="image" size={35} color="#FF6347" />
+                <FontAwesome5 name="hands-helping" size={35} color="#FF6347" />
               </View>
-              <Text style={styles.categoryBtnTxt}>Upload</Text>
+              <Text style={styles.categoryBtnTxt}>Counsellors</Text>
             </TouchableOpacity>
           </View>
           {/* <View style={{
@@ -126,83 +141,23 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.categoryBtn}
               onPress={() => {
-                navigation.navigate("ContactsList", {
-                  title: "Counsellors",
-                });
+                navigation.navigate("FileUpload", { title: "Upload File" });
               }}
             >
               <View style={styles.categoryIcon}>
-                <FontAwesome5 name="hands-helping" size={35} color="#FF6347" />
+                <Ionicons name="image" size={35} color="#FF6347" />
               </View>
-              <Text style={styles.categoryBtnTxt}>Counsellors</Text>
+              <Text style={styles.categoryBtnTxt}>Upload</Text>
             </TouchableOpacity>
           </View>
         </View>
-        <View style={styles.cardsWrapper}>
-          <Text
-            style={{
-              alignSelf: "center",
-              fontSize: 18,
-              fontWeight: "bold",
-              color: "white",
-            }}
-          >
-            Most recent
-          </Text>
-          <View style={styles.card}>
-            <View style={styles.cardImgWrapper}>
-              <Image
-                source={Images[4].image}
-                resizeMode="cover"
-                style={styles.cardImg}
-              />
-            </View>
-            <View style={styles.cardInfo}>
-              <Text style={styles.cardTitle}>New Secondary due to open</Text>
-              {/* <StarRating ratings={4} reviews={99} /> */}
-              <Text style={styles.cardDetails}>
-                New secondary school will be open early next year
-              </Text>
-            </View>
-          </View>
-          <View style={styles.card}>
-            <View style={styles.cardImgWrapper}>
-              <Image
-                source={Images[5].image}
-                resizeMode="cover"
-                style={styles.cardImg}
-              />
-            </View>
-            <View style={styles.cardInfo}>
-              <Text style={styles.cardTitle}>GP surgery opened</Text>
-              {/* <StarRating ratings={4} reviews={99} /> */}
-              <Text style={styles.cardDetails}>
-                A new state-of-the-art health centre has opened its doors in
-                Milton Keynes.
-              </Text>
-            </View>
-          </View>
-          <View style={styles.card}>
-            <View style={styles.cardImgWrapper}>
-              <Image
-                source={Images[6].image}
-                resizeMode="cover"
-                style={styles.cardImg}
-              />
-            </View>
-            <View style={styles.cardInfo}>
-              <Text style={styles.cardTitle}>
-                The V4 Watling Street is now fully open
-              </Text>
-              {/* <StarRating ratings={4} reviews={99} /> */}
-              <Text style={styles.cardDetails}>
-                Section of grid road that's been closed for months re-opens
-              </Text>
-            </View>
-          </View>
-        </View>
-        {/* </ImageBackground> */}
       </LinearGradient>
+      <LinearGradient colors={["#648880", "#207cca", "#7db9e8"]}>
+        <TouchableOpacity style={styles.categoryBtn}>
+          <RecentNews />
+        </TouchableOpacity>
+      </LinearGradient>
+      {/* </ImageBackground> */}
     </ScrollView>
   );
 };

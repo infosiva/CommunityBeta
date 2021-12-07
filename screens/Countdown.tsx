@@ -69,7 +69,7 @@ const CountDownTimer = () => {
                 fontWeight: "bold",
               }}
               // separatorStyle={{color: '#1CC625'}}
-              timeToShow={["D", "H", "M"]}
+              timeToShow={["D", "H", "M", "S"]}
               // timeLabels={{ m: null, s: null }}
               showSeparator
             />

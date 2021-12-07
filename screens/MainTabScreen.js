@@ -24,6 +24,8 @@ import CustomImageView from "../components/ImageView";
 import SendNotifications from "../components/SendNotifications";
 import FileUpload from "./FileUpload";
 
+import RecentNews from "./RecentNews";
+
 import { Notifications } from "expo";
 import * as Permissions from "expo-permissions";
 import { color } from "react-native-reanimated";
@@ -74,7 +76,7 @@ const MainTabScreen = () => {
         name="NotificationSettings"
         component={NotificationSettings}
         options={{
-          tabBarLabel: "NotificationSettings",
+          tabBarLabel: "Settings",
           tabBarColor: "#1f65ff",
           tabBarIcon: ({ color }) => (
             <Icon name="ios-notifications" color={color} size={26} />
@@ -146,7 +148,7 @@ const HomeStackScreen = ({ navigation }) => {
               <TouchableOpacity
                 style={{ paddingHorizontal: 10, marginTop: 5 }}
                 onPress={() => {
-                  // navigation.navigate('Profile');
+                  navigation.navigate('Profile');
                 }}
               >
                 <Avatar.Image
@@ -214,6 +216,14 @@ const HomeStackScreen = ({ navigation }) => {
           headerTitle: false,
           headerTransparent: true,
           headerTintColor: "#fff",
+        })}
+      />
+      <HomeStack.Screen
+        name="RecentNews"
+        component={RecentNews}
+        options={({ route }) => ({
+          title: route.params.title,
+          headerBackTitleVisible: false,
         })}
       />
     </HomeStack.Navigator>

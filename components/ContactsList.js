@@ -65,11 +65,11 @@ export default class ContactsList extends Component {
       <View
         style={
           ({ ...styles.item },
-          { paddingLeft: 20, paddingBottom: 20, paddingTop: 5, alignSelf: "center", width: '100%' })
+          { paddingLeft: 10, paddingBottom: 10, alignSelf: "center", width: '100%' })
         }
       >
         {Object.keys(item).map((key) => (
-          <View style={{width: '100%', display: 'flex', flexDirection: 'row', padding: 10}}>
+          <View style={{width: '100%', display: 'flex', flexDirection: 'row', padding: 5}}>
             <Text style={{width: '35%', fontWeight: '500', fontStyle:'italic'}}>{key}</Text>
             <Text>{item[key]}</Text>
           </View>
